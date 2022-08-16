@@ -22,6 +22,7 @@ def get_quizz_filename(categorie, titre, difficulte):
 def generate_json_file(categorie, titre, url):
     out_questionnaire_data = {"categorie": categorie, "titre": titre, "questions": []}
     out_questions_data = []
+    # on inclut la gestion des erreurs de lecture de l'url
     try:
         response = requests.get(url)
     except Exception:
