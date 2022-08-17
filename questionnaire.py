@@ -1,11 +1,5 @@
 # PROJET QUESTIONNAIRE V3 : POO
 #
-# - Pratiquer sur la POO
-# - Travailler sur du code existant
-# - Mener un raisonnement
-#
-# -> Définir les entitées (données, actions)
-#
 # Question
 #    - titre       - str
 #    - choix       - (str)
@@ -19,15 +13,21 @@
 #    - lancer()
 #
 
+import json
+
 class Question:
     def __init__(self, titre, choix, bonne_reponse):
         self.titre = titre
         self.choix = choix
         self.bonne_reponse = bonne_reponse
 
-    def FromData(data):
+    def FromJsonData(data):
         # ....
-        q = Question(data[2], data[0], data[1])
+        choix = [i[0] for i in data["choix"]]
+        bonne_reponse = [i[0] for i in data["choix"] if i[1]]
+        if len(bonne_reponse) != 1:
+            return None
+        q = Question(data["titre"], choix, bonne_reponse[0])
         return q
 
     def poser(self):
@@ -81,19 +81,23 @@ class Questionnaire:
 
 lancer_questionnaire(questionnaire)"""
 
-# q1 = Question("Quelle est la capitale de la France ?", ("Marseille", "Nice", "Paris", "Nantes", "Lille"), "Paris")
-# q1.poser()
+# Questionnaire(
+#     (
+#     Question("Quelle est la capitale de la France ?", ("Marseille", "Nice", "Paris", "Nantes", "Lille"), "Paris"), 
+#     Question("Quelle est la capitale de l'Italie ?", ("Rome", "Venise", "Pise", "Florence"), "Rome"),
+#     Question("Quelle est la capitale de la Belgique ?", ("Anvers", "Bruxelles", "Bruges", "Liège"), "Bruxelles")
+#     )
+# ).lancer()
 
-# data = (("Marseille", "Nice", "Paris", "Nantes", "Lille"), "Paris", "Quelle est la capitale de la France ?")
-# q = Question.FromData(data)
-# print(q.__dict__)
+# charger un fichier json
+filename = "cinema_starwars_debutant.json"
+file = open(filename, "r")
+json_data = file.read()
+file.close()
+questionnaire_data = json.loads(json_data)
 
-Questionnaire(
-    (
-    Question("Quelle est la capitale de la France ?", ("Marseille", "Nice", "Paris", "Nantes", "Lille"), "Paris"), 
-    Question("Quelle est la capitale de l'Italie ?", ("Rome", "Venise", "Pise", "Florence"), "Rome"),
-    Question("Quelle est la capitale de la Belgique ?", ("Anvers", "Bruxelles", "Bruges", "Liège"), "Bruxelles")
-    )
-).lancer()
+questionnaire_data_questions = questionnaire_data["questions"]
+q = Question.FromJsonData(questionnaire_data_questions[0])
+q.poser()
 
-
+print()
