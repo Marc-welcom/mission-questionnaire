@@ -15,6 +15,7 @@
 
 import json
 import sys
+import pathlib
 
 class Question:
     def __init__(self, titre, choix, bonne_reponse):
@@ -76,6 +77,19 @@ class Questionnaire:
        
         return Questionnaire(questions, data["categorie"], data["titre"], data["difficulte"])
 
+    def from_json_file(filename):
+        try:
+            # charger un fichier json valide
+            file = open(filename, "r")
+            json_data = file.read()
+            file.close()
+            questionnaire_data = json.loads(json_data)
+        except Exception:
+            print("Erreur lors de l'ouverture ou de la lecture du fichier! ")
+            return None
+
+        return Questionnaire.from_json_data(questionnaire_data)
+
     def lancer(self):
         score            =  0
         nombre_questions =  len(self.questions)
@@ -93,21 +107,18 @@ class Questionnaire:
         print("Score final :", score, "sur", nombre_questions)
         return score
 
-# Questionnaire(
-#     (
-#     Question("Quelle est la capitale de la France ?", ("Marseille", "Nice", "Paris", "Nantes", "Lille"), "Paris"), 
-#     Question("Quelle est la capitale de l'Italie ?", ("Rome", "Venise", "Pise", "Florence"), "Rome"),
-#     Question("Quelle est la capitale de la Belgique ?", ("Anvers", "Bruxelles", "Bruges", "Liège"), "Bruxelles")
-#     )
-# ).lancer()
+# Questionnaire.from_json_file("cinema_starwars_debutant.json").lancer()
 
-# charger un fichier json
-filename = "cinema_starwars_debutant.json"
-file = open(filename, "r")
-json_data = file.read()
-file.close()
-questionnaire_data = json.loads(json_data)
+if len(sys.argv) < 2:
+    print("ERREUR: Vous devez specifier le nom du fichier json a charger !")
+    exit(0)
 
-Questionnaire.from_json_data(questionnaire_data).lancer()
+json_filename = sys.argv[1]
+path = pathlib.Path(json_filename)
+if path.suffix != ".json":
+    print("ERREUR: Le fichier specifié doit avoir l'extension .json !")
+    exit(0)
 
-print()
+questionnaire = Questionnaire.from_json_file(json_filename)
+if questionnaire:
+    questionnaire.lancer()
