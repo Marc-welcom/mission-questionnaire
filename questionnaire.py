@@ -33,8 +33,8 @@ class Question:
         q = Question(data["titre"], choix, bonne_reponse[0])
         return q
 
-    def poser(self):
-        print("QUESTION")
+    def poser(self, num_question, nombre_questions):
+        print(f"QUESTION {num_question} / {nombre_questions}")
         print("  " + self.titre)
         for i in range(len(self.choix)):
             print("  ", i+1, "-", self.choix[i])
@@ -77,27 +77,21 @@ class Questionnaire:
         return Questionnaire(questions, data["categorie"], data["titre"], data["difficulte"])
 
     def lancer(self):
-        score = 0
-
+        score            =  0
+        nombre_questions =  len(self.questions)
         print("-------------")
         print("QUESTIONNAIRE    : "+ self.titre)
         print("    Categorie    : "+ self.categorie)
         print("    Difficulte   : "+ self.difficulte)
-        print("    Nombre de questions: "+ str(len(self.questions)))
+        print("    Nombre de questions: "+ str(nombre_questions))
         print("-------------")
-        for question in self.questions:
-            if question.poser():
+
+        for i in range(nombre_questions):
+            question = self.questions[i]
+            if question.poser(i+1, nombre_questions):
                 score += 1
-        print("Score final :", score, "sur", len(self.questions))
+        print("Score final :", score, "sur", nombre_questions)
         return score
-
-"""questionnaire = (
-    ("Quelle est la capitale de la France ?", ("Marseille", "Nice", "Paris", "Nantes", "Lille"), "Paris"), 
-    ("Quelle est la capitale de l'Italie ?", ("Rome", "Venise", "Pise", "Florence"), "Rome"),
-    ("Quelle est la capitale de la Belgique ?", ("Anvers", "Bruxelles", "Bruges", "Liège"), "Bruxelles")
-                )
-
-lancer_questionnaire(questionnaire)"""
 
 # Questionnaire(
 #     (
