@@ -11,7 +11,6 @@
 #    - questions      - (Question)
 #
 #    - lancer()
-#
 
 import json
 import sys
@@ -28,7 +27,7 @@ class Question:
         choix = [i[0] for i in data["choix"]]
         # Trouve le bon choix en fonction du bool 'bonne reponse'
         bonne_reponse = [i[0] for i in data["choix"] if i[1]]
-        # si aucune bonne reponse ou plusieurs bonnes reponses -> anomalie dans les donnees
+        # Si aucune bonne reponse ou plusieurs bonnes reponses -> anomalie dans les donnees
         if len(bonne_reponse) != 1:
             return None
         q = Question(data["titre"], choix, bonne_reponse[0])
@@ -74,7 +73,9 @@ class Questionnaire:
     def from_json_data (data):
         questionnaire_data_questions = data["questions"]
         questions = [Question.from_json_data(i) for i in questionnaire_data_questions]
-       
+        #Supprime les questions None (qui n'ont pas pu etre creéé)
+        questions = [i for i in questions if i]
+
         return Questionnaire(questions, data["categorie"], data["titre"], data["difficulte"])
 
     def from_json_file(filename):

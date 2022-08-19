@@ -26,7 +26,7 @@ def generate_json_file(categorie, titre, url):
     try:
         response = requests.get(url)
     except Exception:
-        print(f"Exception sur l'url {url}")
+        print(f"Exception pour la requete HTTP GET sur l'url {url}")
 
     finally:
         try:
